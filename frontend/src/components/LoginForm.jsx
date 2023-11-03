@@ -4,7 +4,6 @@ import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import loginSchema from '../schemas/index.js'
 
-
 const LoginForm = () => {
   const { t } = useTranslation();
   const { values, errors, touched, handleSubmit, handleChange, handleBlur, isSubmitting } = useFormik({
@@ -17,7 +16,6 @@ const LoginForm = () => {
       console.log(values);
     }
   });
-  console.log(touched);
   return (
     <Form onSubmit={handleSubmit} className="col-12 col-md-6 mt-3 mt-mb-0">
       <h1 className="text-center mb-4">{t('form.enter')}</h1>
