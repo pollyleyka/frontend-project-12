@@ -36,26 +36,6 @@ const LoginPage = () => {
     },
     validationSchema: loginSchema,
 
-    // onSubmit: async (value) => {
-    //   const { username, password } = value;
-    //   const userData = { username, password };
-    //   try {
-    //     const response = await axios.post(routes.loginPath(), userData);
-    //     logIn(response.data);
-    //     navigate(routes.home);
-    //     setAuthError(null);
-    //   } catch (error) {
-    //     if (!error.isAxiosError) {
-    //       setAuthError(t('loginPage.validation.unknown'));
-    //     }
-    //     const { statusText } = error.response;
-    //     const message = statusText === 'Unauthorized'
-   // //       ? t('loginPage.validation.wrongData')
-    //       : t('loginPage.validation.unknown');
-    //     setAuthError(message);
-    //   }
-    // },
-
 
     onSubmit: async (values) => {
       setAuthFailed(false);
