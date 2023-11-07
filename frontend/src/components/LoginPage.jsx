@@ -36,15 +36,13 @@ const LoginPage = () => {
     },
     validationSchema: loginSchema,
 
-
     onSubmit: async (values) => {
       setAuthFailed(false);
       try {
         const res = await axios.post(routes.loginPath(), values);
         localStorage.setItem('userId', JSON.stringify(res.data));
-        auth.logIn();
-        const { from } = location.state;
-        navigate(from);
+        auth.logIn(res.data);
+        navigate(routes.home);
       } catch (err) {
         setSubmitting(false);
         if (err.isAxiosError && err.response.status === 401) {

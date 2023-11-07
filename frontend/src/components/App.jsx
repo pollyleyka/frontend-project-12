@@ -13,6 +13,7 @@ import SignupPage from './SignupPage.jsx';
 import PrivatePage from './PrivatePage.jsx';
 import AuthContext from '../contexts/index.jsx';
 import useAuth from '../hooks/index.jsx';
+import routes from '../routes.js';
 
 const AuthProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -44,12 +45,11 @@ const App = () => {
     <AuthProvider>
     <BrowserRouter>
       <Routes>
-          <Route path="*" element={<ErrorPage />} />
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
+          <Route path={routes.error} element={<ErrorPage />} />
+          <Route path={routes.login} element={<LoginPage />} />
+          <Route path={routes.signup} element={<SignupPage />} />
           <Route
-            path="/private"
+            path={routes.home}
             element={(
               <PrivateRoute>
                 <PrivatePage />
