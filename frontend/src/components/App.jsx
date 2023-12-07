@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   BrowserRouter,
   Routes,
@@ -16,16 +16,25 @@ import useAuth from '../hooks/index.jsx';
 import routes from '../routes.js';
 
 const AuthProvider = ({ children }) => {
+  const currentUser = JSON.parse(localStorage.getItem('user'));
+  const [user, setUser] = useState(currentUser || null);
+
   const [loggedIn, setLoggedIn] = useState(false);
 
-  const logIn = () => setLoggedIn(true);
-  const logOut = () => {
-    localStorage.removeItem('userId');
+  const logIn = useCallback((userData) => {
+    localStorage.setItem('user', JSON.stringify(userData));
+    setUser(userData);
+    setLoggedIn(true);
+  }, []);
+
+  const logOut = useCallback(() => {
+    localStorage.removeItem('user');
+    setUser(null);
     setLoggedIn(false);
-  };
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ loggedIn, logIn, logOut }}>
+    <AuthContext.Provider value={{ user, loggedIn, logIn, logOut }}>
       {children}
     </AuthContext.Provider>
   );
@@ -34,11 +43,12 @@ const AuthProvider = ({ children }) => {
 const PrivateRoute = ({ children }) => {
   const auth = useAuth();
   const location = useLocation();
-
-  return (
-    auth.loggedIn ? children : <Navigate to="/login" state={{ from: location }} />
-  );
+  //const { user } = useAuth();
+  //return user ? children : <Navigate to={routes.login} />;
+  return auth.loggedIn ? children : <Navigate to="/login" state={{ from: location }}/>
 };
+
+
 
 const App = () => {
   return (

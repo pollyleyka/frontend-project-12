@@ -7,6 +7,7 @@ import loginSchema from '../schemas/index.js';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/index.jsx';
 import routes from '../routes.js';
+import imagePath from '../assets/avatar.jpg';
 
 const LoginPage = () => {
   const { t } = useTranslation();
@@ -40,7 +41,7 @@ const LoginPage = () => {
       setAuthFailed(false);
       try {
         const res = await axios.post(routes.loginPath(), values);
-        localStorage.setItem('userId', JSON.stringify(res.data));
+        localStorage.setItem('user', res.data);
         auth.logIn(res.data);
         navigate(routes.home);
       } catch (err) {
@@ -69,8 +70,8 @@ const LoginPage = () => {
                 <Row className="card-body p-5">
                   <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
                     <img
-                      src="../assets/avatar.jpg"
-                      className="rounded-circle"
+                      src={imagePath}
+                      className="img-fluid"
                       alt="Войти"
                     ></img>
                   </div>
