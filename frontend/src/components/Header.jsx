@@ -1,5 +1,5 @@
 import { Container } from 'react-bootstrap';
-import useAuth from '../hooks/index.jsx';
+import { useAuth } from '../hooks/index.jsx';
 
  const Header = () => {
    const { logOut } = useAuth();

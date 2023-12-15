@@ -5,7 +5,7 @@ import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import loginSchema from '../schemas/index.js';
 import { useLocation, useNavigate } from 'react-router-dom';
-import useAuth from '../hooks/index.jsx';
+import { useAuth } from '../hooks/index.jsx';
 import routes from '../routes.js';
 import imagePath from '../assets/avatar.jpg';
 
@@ -121,12 +121,6 @@ const LoginPage = () => {
                       <Form.Label htmlFor="password">
                         {t('form.passwordPlaceholder')}
                       </Form.Label>
-                      {/* {(errors.password && touched.password) ||
-                      (errors.username && touched.username) ? (
-                        <div className="invalid-tooltip">
-                          {t('validation.wrongData')}
-                        </div>
-                      ) : null} */}
                       <Form.Control.Feedback type="invalid">{t('validation.wrongData')}</Form.Control.Feedback>
                     </Form.Floating>
                     <Button

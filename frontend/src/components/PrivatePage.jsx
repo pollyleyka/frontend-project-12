@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Row, Container,
 } from 'react-bootstrap';
@@ -24,7 +24,6 @@ const PrivatePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await axios.get(routes.dataPath(), { headers: getAuthHeader() } );
-      console.log(data);
       dispatch(setChannels(data.channels));
       dispatch(setMessages(data.messages));
     };

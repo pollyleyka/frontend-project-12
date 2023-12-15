@@ -1,18 +1,20 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   BrowserRouter,
   Routes,
   Route,
-  Link,
   Navigate,
   useLocation,
 } from 'react-router-dom';
+import { io } from 'socket.io-client';
+import { useDispatch } from 'react-redux';
 import LoginPage from './LoginPage.jsx';
 import ErrorPage from './ErrorPage.jsx';
 import SignupPage from './SignupPage.jsx';
 import PrivatePage from './PrivatePage.jsx';
-import AuthContext from '../contexts/index.jsx';
-import useAuth from '../hooks/index.jsx';
+import { AuthContext, SocketContext } from '../contexts/index.jsx';
+import { useAuth } from '../hooks/index.jsx';
+import { setMessages, addMessage } from '../store/messagesSlice.jsx';
 import routes from '../routes.js';
 
 const AuthProvider = ({ children }) => {
@@ -42,16 +44,29 @@ const AuthProvider = ({ children }) => {
 
 const PrivateRoute = ({ children }) => {
   const auth = useAuth();
+  console.log('auth', auth);
   const location = useLocation();
-  //const { user } = useAuth();
-  //return user ? children : <Navigate to={routes.login} />;
   return auth.loggedIn ? children : <Navigate to="/login" state={{ from: location }}/>
 };
 
-
-
 const App = () => {
+  const socket = io('ws://localhost:3000');
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    socket.on('newMessage', (message) => {
+      dispatch(addMessage(message));
+    });
+    return () => {
+      socket.off('newMessage');
+    };
+  }, []);
+
+  const socketApi = {
+    sendMessage: (...args) => socket.emit('newMessage', ...args),
+  };
   return (
+    <SocketContext.Provider value={socketApi}>
     <AuthProvider>
     <BrowserRouter>
       <Routes>
@@ -69,6 +84,7 @@ const App = () => {
       </Routes>
     </BrowserRouter>
     </AuthProvider>
+    </SocketContext.Provider>
   )
 }
 
