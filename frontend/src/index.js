@@ -6,7 +6,7 @@ import './index.css';
 
 const app = async () => {
   const root = ReactDOM.createRoot(document.getElementById('root'));
-  return root.render(await init());
+  root.render(await init());
 };
 
 app();
