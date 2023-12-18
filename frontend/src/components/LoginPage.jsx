@@ -3,7 +3,7 @@ import { Navbar, Container, Row, Form, Button } from 'react-bootstrap';
 import React, { useEffect, useRef, useState } from 'react';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
-import loginSchema from '../schemas/index.js';
+import schemas from '../schemas/index.js';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/index.jsx';
 import routes from '../routes.js';
@@ -35,7 +35,7 @@ const LoginPage = () => {
       username: '',
       password: '',
     },
-    validationSchema: loginSchema,
+    validationSchema: schemas.login,
 
     onSubmit: async (values) => {
       setAuthFailed(false);

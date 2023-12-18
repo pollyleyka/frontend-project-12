@@ -14,9 +14,9 @@ import SignupPage from './SignupPage.jsx';
 import PrivatePage from './PrivatePage.jsx';
 import { AuthContext, SocketContext } from '../contexts/index.jsx';
 import { useAuth } from '../hooks/index.jsx';
-import { setMessages, addMessage } from '../store/messagesSlice.jsx';
+import { addMessage } from '../store/messagesSlice.jsx';
+import { addChannel } from '../store/channelsSlice.jsx';
 import routes from '../routes.js';
-//import { actions as messagesActions } from '../store/messagesSlice.jsx';
 
 const AuthProvider = ({ children }) => {
   const currentUser = JSON.parse(localStorage.getItem('user'));
@@ -57,7 +57,15 @@ const PrivateRoute = ({ children }) => {
 const App = () => {
   const socket = io('ws://localhost:3000');
   const dispatch = useDispatch();
- // const { addMessage } = messagesActions;
+
+useEffect(() => {
+    socket.on('newChannel', (channel) => {
+      dispatch(addChannel(channel));
+    });
+    return () => {
+      socket.off('newChannel');
+    };
+  });
 
   useEffect(() => {
     socket.on('newMessage', (message) => {
@@ -80,8 +88,16 @@ const App = () => {
       }),
     [socket]
   );
+  const newChannel = useCallback((...args) => new Promise((resolve, reject) => {
+    socket.timeout(5000).emit('newChannel', ...args, (err, response) => {
+      if (err) {
+        reject(err);
+      }
+      resolve(response);
+    });
+  }), [socket]);
 
-  const socketApi = useMemo(() => ({ sendMessage }), [sendMessage]);
+  const socketApi = useMemo(() => ({ sendMessage, newChannel }), [sendMessage, newChannel]);
   return (
     <SocketContext.Provider value={socketApi}>
       <AuthProvider>

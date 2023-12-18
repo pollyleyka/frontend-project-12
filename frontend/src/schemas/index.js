@@ -1,8 +1,6 @@
-import * as yup from 'yup';
+import loginSchema from './loginSchema.js';
 
-export default yup.object().shape({
-  username: yup.string().min(4, 'Логин должен быть не менее 4-х символов')
-    .required('Обязательное поле'),
-  password: yup.string().min(4, 'Пароль должен быть не менее 4-х символов')
-    .required('Обязательное поле'),
-});
+export default {
+  login: loginSchema,
+//  newChannel: newChannelSchema,
+};
