@@ -7,11 +7,14 @@ import { setCurrentChannelId } from '../../store/channelsSlice.jsx';
 import { hideModal } from '../../store/modalsSlice.jsx';
 import { useSocket } from '../../hooks/index.jsx';
 
-const channelNameValidation = (names) => yup.object().shape({
-  name: yup.string().trim()
-    .required('Обязательное поле')
-    .notOneOf(names, 'Должно быть уникальным'),
-});
+const channelNameValidation = (names) =>
+  yup.object().shape({
+    name: yup
+      .string()
+      .trim()
+      .required('Обязательное поле')
+      .notOneOf(names, 'Должно быть уникальным'),
+  });
 
 const Add = () => {
   const socketApi = useSocket();
@@ -33,7 +36,6 @@ const Add = () => {
         console.error(error);
       }
     },
-
   });
 
   const inputRef = useRef();
@@ -58,14 +60,27 @@ const Add = () => {
               placeholder="Имя канала"
               id="name"
               className="mb-2"
-              isInvalid={(formik.errors.name && formik.touched.name)}
+              isInvalid={formik.errors.name && formik.touched.name}
             />
-            <Form.Control.Feedback type="invalid">{formik.errors.name}</Form.Control.Feedback>
-            <Form.Label htmlFor="name" hidden>Имя канала</Form.Label>
+            <Form.Control.Feedback type="invalid">
+              {formik.errors.name}
+            </Form.Control.Feedback>
+            <Form.Label htmlFor="name" hidden>
+              Имя канала
+            </Form.Label>
           </Form.Group>
           <div className="d-flex justify-content-end">
-            <Button onClick={() => dispatch(hideModal())} type="button" className="me-2" variant="secondary">Отменить</Button>
-            <Button type="submit" variant="primary">Отправить</Button>
+            <Button
+              onClick={() => dispatch(hideModal())}
+              type="button"
+              className="me-2"
+              variant="secondary"
+            >
+              Отменить
+            </Button>
+            <Button type="submit" variant="primary">
+              Отправить
+            </Button>
           </div>
         </form>
       </Modal.Body>
