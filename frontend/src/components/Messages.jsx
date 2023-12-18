@@ -11,7 +11,7 @@ const Messages = () => {
   const { user } = useAuth();
   const { messages } = useSelector((state) => state.messages);
   const { channels, currentChannelId } = useSelector((state) => state.channels);
-  const { userName } = JSON.parse(localStorage.getItem('userId'));
+  const { userName } = JSON.parse(localStorage.getItem('user'));
   const currentChannel = channels.find(({ id }) => id === currentChannelId);
   const currentChannelName = currentChannel ? currentChannel.name : 'general';
 
