@@ -7,7 +7,7 @@ import { setCurrentChannelId } from '../../store/channelsSlice.jsx';
 import { hideModal } from '../../store/modalsSlice.jsx';
 import { useSocket } from '../../hooks/index.jsx';
 
-const channelNameValidation = (names) => yup.object().shape({
+export const channelNameValidation = (names) => yup.object().shape({
   name: yup
     .string()
     .trim()
@@ -35,6 +35,8 @@ const Add = () => {
         console.error(error);
       }
     },
+    validateOnBlur: false,
+    validateOnChange: false,
   });
 
   const inputRef = useRef();
@@ -43,7 +45,7 @@ const Add = () => {
   }, []);
 
   return (
-    <Modal show centered>
+    <Modal show centered onHide={() => dispatch(hideModal())}>
       <Modal.Header closeButton onHide={() => dispatch(hideModal())}>
         <Modal.Title>Добавить канал</Modal.Title>
       </Modal.Header>

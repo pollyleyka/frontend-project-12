@@ -17,8 +17,11 @@ const modalsSlice = createSlice({
       state.channelId = null;
       state.modalType = null;
     },
+    setChannelId: (state, { payload }) => {
+      state.channelId = payload.id;
+    },
   },
 });
 
 export default modalsSlice.reducer;
-export const { showModal, hideModal } = modalsSlice.actions;
+export const { showModal, hideModal, setChannelId } = modalsSlice.actions;

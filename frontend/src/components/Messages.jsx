@@ -1,5 +1,5 @@
 import { Form, Button, Col } from 'react-bootstrap';
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useFormik } from 'formik';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -17,23 +17,33 @@ const Messages = () => {
 
   const inputRef = useRef();
 
-  const messagesOfCurrentChannel = messages.filter(
-    (message) => message.channelId === currentChannelId,
-  );
+  const messagesOfCurrentChannel = messages
+    .filter(({ channelId }) => channelId === currentChannelId);
 
   const messageBox = useRef(null);
+
+  const scrollToBottom = () => {
+    const { scrollHeight } = messageBox.current;
+    const height = messageBox.current.clientHeight;
+    const maxScrollTop = scrollHeight - height;
+    messageBox.current.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+  };
+
+  useEffect(() => scrollToBottom(), [messagesOfCurrentChannel]);
+  useEffect(() => {
+    inputRef.current.focus();
+  }, [currentChannelId]);
 
   const formik = useFormik({
     initialValues: {
       message: '',
     },
     onSubmit: async ({ message }) => {
-      console.log(message);
       try {
         await socketApi.sendMessage({
           message,
           channelId: currentChannelId,
-          user: user.username,
+          nickname: user.username,
         });
         formik.resetForm();
       } catch (error) {
@@ -59,16 +69,16 @@ const Messages = () => {
           ref={messageBox}
           className="chat-messages overflow-auto px-5 h-100"
         >
-          {messagesOfCurrentChannel.map(({ id, name, message }) => (
+          {messagesOfCurrentChannel.map(({ id, nickname, message }) => (
             <div
               key={id}
               className={
-                userName === name
+                userName === nickname
                   ? 'user-message text-break mb-2'
                   : 'message text-break mb-2'
               }
             >
-              <b>{name}</b>
+              <b>{nickname}</b>
               {': '}
               {message}
             </div>

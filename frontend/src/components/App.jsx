@@ -17,7 +17,7 @@ import PrivatePage from './PrivatePage.jsx';
 import { AuthContext, SocketContext } from '../contexts/index.jsx';
 import { useAuth } from '../hooks/index.jsx';
 import { addMessage } from '../store/messagesSlice.jsx';
-import { addChannel } from '../store/channelsSlice.jsx';
+import { addChannel, renameChannel, removeChannel } from '../store/channelsSlice.jsx';
 import routes from '../routes.js';
 
 const AuthProvider = ({ children }) => {
@@ -48,7 +48,6 @@ const AuthProvider = ({ children }) => {
 
 const PrivateRoute = ({ children }) => {
   const auth = useAuth();
-  console.log('auth', auth);
   const location = useLocation();
   return auth.loggedIn ? (
     children
@@ -79,6 +78,23 @@ const App = () => {
     };
   }, [dispatch, socket]);
 
+  useEffect(() => {
+    socket.on('removeChannel', (channelId) => {
+      dispatch(removeChannel(channelId));
+    });
+    return () => {
+      socket.off('removeChannel');
+    };
+  });
+  useEffect(() => {
+    socket.on('renameChannel', (channel) => {
+      dispatch(renameChannel(channel));
+    });
+    return () => {
+      socket.off('renameChannel');
+    };
+  });
+
   const sendMessage = useCallback(
     (...args) => new Promise((resolve, reject) => {
       socket.timeout(5000).emit('newMessage', ...args, (err) => {
@@ -90,6 +106,7 @@ const App = () => {
     }),
     [socket],
   );
+
   const newChannel = useCallback(
     (...args) => new Promise((resolve, reject) => {
       socket.timeout(5000).emit('newChannel', ...args, (err, response) => {
@@ -102,9 +119,30 @@ const App = () => {
     [socket],
   );
 
+  const removeChan = useCallback((...args) => new Promise((resolve, reject) => {
+    socket.timeout(5000).emit('removeChannel', ...args, (err, response) => {
+      /* eslint-disable-next-line */
+      if (err) {
+        reject(err);
+      }
+      resolve(response);
+    });
+  }), [socket]);
+  const renameChan = useCallback((...args) => new Promise((resolve, reject) => {
+    socket.timeout(5000).emit('renameChannel', ...args, (err, response) => {
+      /* eslint-disable-next-line */
+      if (err) {
+        reject(err);
+      }
+      resolve(response);
+    });
+  }), [socket]);
+
   const socketApi = useMemo(
-    () => ({ sendMessage, newChannel }),
-    [sendMessage, newChannel],
+    () => ({
+      sendMessage, newChannel, removeChan, renameChan,
+    }),
+    [sendMessage, newChannel, removeChan, renameChan],
   );
   return (
     <SocketContext.Provider value={socketApi}>

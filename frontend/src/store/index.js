@@ -7,7 +7,7 @@ const store = configureStore({
   reducer: {
     channels: channelsSlice,
     messages: messagesSlice,
-    modal: modalsSlice,
+    modals: modalsSlice,
   },
 });
 

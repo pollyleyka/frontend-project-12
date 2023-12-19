@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect } from 'react';
 import {
-  Row, Container,
+  Row,
 } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import Header from './Header.jsx';
@@ -30,15 +30,14 @@ const PrivatePage = () => {
   }, [dispatch]);
 
   return (
-    <div className="h-100">
-      <div className="d-flex flex-column h-100">
-        <Header />
-        <Container className="h-100 my-4 overflow-hidden rounded shadow">
-          <Row className="h-100 bg-white flex-md-row">
-            <Channels />
-            <Messages />
-          </Row>
-        </Container>
+
+    <div className="d-flex flex-column h-100">
+      <Header />
+      <div className="container chat-box h-100 my-4 overflow-hidden rounded shadow">
+        <Row className="h-100 bg-white flex-md-row">
+          <Channels />
+          <Messages />
+        </Row>
       </div>
     </div>
   );

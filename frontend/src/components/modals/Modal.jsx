@@ -15,8 +15,7 @@ const renderModal = (modalType) => {
 const Modal = () => {
   const dispath = useDispatch();
 
-  const modalType = useSelector((state) => state.modal.modalType);
-  console.log(modalType);
+  const modalType = useSelector((state) => state.modals.modalType);
 
   return (
     <>
