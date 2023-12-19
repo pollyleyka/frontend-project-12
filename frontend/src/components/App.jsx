@@ -1,4 +1,6 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, {
+  useState, useCallback, useEffect, useMemo,
+} from 'react';
 import {
   BrowserRouter,
   Routes,
@@ -37,6 +39,7 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   return (
+    /* eslint-disable-next-line */
     <AuthContext.Provider value={{ user, loggedIn, logIn, logOut }}>
       {children}
     </AuthContext.Provider>
@@ -58,7 +61,7 @@ const App = () => {
   const socket = io('ws://localhost:3000');
   const dispatch = useDispatch();
 
-useEffect(() => {
+  useEffect(() => {
     socket.on('newChannel', (channel) => {
       dispatch(addChannel(channel));
     });
@@ -74,30 +77,35 @@ useEffect(() => {
     return () => {
       socket.off('newMessage');
     };
-  }, []);
+  }, [dispatch, socket]);
 
   const sendMessage = useCallback(
-    (...args) =>
-      new Promise((resolve, reject) => {
-        socket.timeout(5000).emit('newMessage', ...args, (err) => {
-          if (err) {
-            reject(err);
-          }
-          resolve();
-        });
-      }),
-    [socket]
+    (...args) => new Promise((resolve, reject) => {
+      socket.timeout(5000).emit('newMessage', ...args, (err) => {
+        if (err) {
+          reject(err);
+        }
+        resolve();
+      });
+    }),
+    [socket],
   );
-  const newChannel = useCallback((...args) => new Promise((resolve, reject) => {
-    socket.timeout(5000).emit('newChannel', ...args, (err, response) => {
-      if (err) {
-        reject(err);
-      }
-      resolve(response);
-    });
-  }), [socket]);
+  const newChannel = useCallback(
+    (...args) => new Promise((resolve, reject) => {
+      socket.timeout(5000).emit('newChannel', ...args, (err, response) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(response);
+      });
+    }),
+    [socket],
+  );
 
-  const socketApi = useMemo(() => ({ sendMessage, newChannel }), [sendMessage, newChannel]);
+  const socketApi = useMemo(
+    () => ({ sendMessage, newChannel }),
+    [sendMessage, newChannel],
+  );
   return (
     <SocketContext.Provider value={socketApi}>
       <AuthProvider>
@@ -108,11 +116,11 @@ useEffect(() => {
             <Route path={routes.signup} element={<SignupPage />} />
             <Route
               path={routes.home}
-              element={
+              element={(
                 <PrivateRoute>
                   <PrivatePage />
                 </PrivateRoute>
-              }
+              )}
             />
           </Routes>
         </BrowserRouter>

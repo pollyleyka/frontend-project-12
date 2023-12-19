@@ -8,4 +8,4 @@ export default {
   login: '/login',
   signup: '/signup',
   error: '*',
- };
+};

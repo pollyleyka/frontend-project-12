@@ -7,14 +7,13 @@ import { setCurrentChannelId } from '../../store/channelsSlice.jsx';
 import { hideModal } from '../../store/modalsSlice.jsx';
 import { useSocket } from '../../hooks/index.jsx';
 
-const channelNameValidation = (names) =>
-  yup.object().shape({
-    name: yup
-      .string()
-      .trim()
-      .required('Обязательное поле')
-      .notOneOf(names, 'Должно быть уникальным'),
-  });
+const channelNameValidation = (names) => yup.object().shape({
+  name: yup
+    .string()
+    .trim()
+    .required('Обязательное поле')
+    .notOneOf(names, 'Должно быть уникальным'),
+});
 
 const Add = () => {
   const socketApi = useSocket();
