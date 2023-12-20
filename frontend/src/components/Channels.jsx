@@ -3,7 +3,6 @@ import {
 } from 'react-bootstrap';
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-// import cn from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { setCurrentChannelId } from '../store/channelsSlice.jsx';
 import Modal from './modals/Modal.jsx';

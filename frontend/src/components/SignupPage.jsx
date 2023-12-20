@@ -7,6 +7,7 @@ import {
 } from 'react-bootstrap';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import Header from './Header.jsx';
 import { useAuth } from '../hooks/index.jsx';
 import routes from '../routes.js';
 import imagePath from '../assets/avatar_1.jpg';
@@ -53,7 +54,6 @@ const SignUpPage = () => {
           routes.signupPath(),
           { username: username.toLowerCase(), password, confirmPassword },
         );
-        console.log(res.data);
         auth.logIn(res.data);
         navigate(routes.home);
       } catch (err) {
@@ -75,6 +75,7 @@ const SignUpPage = () => {
   });
   return (
     <div className="container-fluid h-100">
+      <Header />
       <Row className="justify-content-center align-content-center h-100">
         <Col className="col-12 col-md-8 col-xxl-6">
           <Card className="shadow-sm">

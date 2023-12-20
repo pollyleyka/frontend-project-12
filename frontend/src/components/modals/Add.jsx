@@ -3,28 +3,30 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { Modal, Form, Button } from 'react-bootstrap';
 import * as yup from 'yup';
+import { useTranslation } from 'react-i18next';
 import { setCurrentChannelId } from '../../store/channelsSlice.jsx';
 import { hideModal } from '../../store/modalsSlice.jsx';
 import { useSocket } from '../../hooks/index.jsx';
 
-export const channelNameValidation = (names) => yup.object().shape({
+export const channelNameValidation = (names, t) => yup.object().shape({
   name: yup
     .string()
     .trim()
-    .required('Обязательное поле')
-    .notOneOf(names, 'Должно быть уникальным'),
+    .required(t('required'))
+    .notOneOf(names, t('shouldBeUniq')),
 });
 
 const Add = () => {
   const socketApi = useSocket();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { channels } = useSelector((state) => state.channels);
 
   const channelsNames = channels.map(({ name }) => name);
 
   const formik = useFormik({
     initialValues: { name: '' },
-    validationSchema: channelNameValidation(channelsNames),
+    validationSchema: channelNameValidation(channelsNames, t),
     onSubmit: async (values) => {
       try {
         const response = await socketApi.newChannel({ name: values.name });
@@ -47,7 +49,7 @@ const Add = () => {
   return (
     <Modal show centered onHide={() => dispatch(hideModal())}>
       <Modal.Header closeButton onHide={() => dispatch(hideModal())}>
-        <Modal.Title>Добавить канал</Modal.Title>
+        <Modal.Title>{t('channels.add')}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={formik.handleSubmit}>
@@ -58,7 +60,7 @@ const Add = () => {
               onChange={formik.handleChange}
               value={formik.values.name}
               name="name"
-              placeholder="Имя канала"
+              placeholder={t('channels.name')}
               id="name"
               className="mb-2"
               isInvalid={formik.errors.name && formik.touched.name}
@@ -67,7 +69,7 @@ const Add = () => {
               {formik.errors.name}
             </Form.Control.Feedback>
             <Form.Label htmlFor="name" hidden>
-              Имя канала
+              {t('channels.name')}
             </Form.Label>
           </Form.Group>
           <div className="d-flex justify-content-end">
@@ -77,10 +79,10 @@ const Add = () => {
               className="me-2"
               variant="secondary"
             >
-              Отменить
+              {t('cancel')}
             </Button>
             <Button type="submit" variant="primary">
-              Отправить
+              {t('send')}
             </Button>
           </div>
         </form>

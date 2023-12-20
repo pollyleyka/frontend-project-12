@@ -1,17 +1,26 @@
-import { Container } from 'react-bootstrap';
+import { Container, Button, Navbar } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/index.jsx';
 
-const Header = () => {
-  const { logOut } = useAuth();
-  const header = 'HexletChat';
-  const text = 'Выйти';
+const LogOutButton = () => {
+  const auth = useAuth();
+  const { t } = useTranslation();
   return (
-    <nav className="shadow-sm navbar navbar-expand-lg navbar-light bg-white">
+    auth.loggedIn
+      ? <Button onClick={auth.logOut} className="btn-primary">{t('loginPage.logout')}</Button>
+      : null
+  );
+};
+const Header = () => {
+  const { t } = useTranslation();
+  return (
+    <Navbar className="shadow-sm" bg="white" expand="lg">
       <Container>
-        <a href="/" className="navbar-brand">{header}</a>
-        <button onClick={logOut} type="button" className="btn btn-primary">{text}</button>
+        <Navbar.Brand as={Link} to="/">{t('hexletChat')}</Navbar.Brand>
+        <LogOutButton />
       </Container>
-    </nav>
+    </Navbar>
   );
 };
 
