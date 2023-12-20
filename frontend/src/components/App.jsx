@@ -54,7 +54,7 @@ const PrivateRoute = ({ children }) => {
 };
 
 const App = () => {
-  const socket = io('ws://localhost:3000');
+  const socket = io('/');
   const dispatch = useDispatch();
 
   useEffect(() => {
