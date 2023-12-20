@@ -2,6 +2,7 @@ import { Form, Button, Col } from 'react-bootstrap';
 import React, { useRef, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import filter from 'leo-profanity';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useSocket } from '../hooks';
@@ -36,9 +37,12 @@ const Messages = () => {
     },
     validationSchema: messageSchema,
     onSubmit: async ({ message }) => {
+      const ruProfanity = filter.getDictionary('ru');
+      filter.add(ruProfanity);
+      const preparedMessage = filter.clean(message.trim());
       try {
         await socketApi.sendMessage({
-          message,
+          message: preparedMessage,
           channelId: currentChannelId,
           user: username,
         });

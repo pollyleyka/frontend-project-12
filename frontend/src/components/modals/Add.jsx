@@ -4,17 +4,22 @@ import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
 import { Modal, Form, Button } from 'react-bootstrap';
 import * as yup from 'yup';
+import filter from 'leo-profanity';
 import { useTranslation } from 'react-i18next';
 import { setCurrentChannelId } from '../../store/channelsSlice.jsx';
 import { hideModal } from '../../store/modalsSlice.jsx';
 import { useSocket } from '../../hooks/index.jsx';
+
+const ruProfanity = filter.getDictionary('ru');
+filter.add(ruProfanity);
 
 export const channelNameValidation = (names, t) => yup.object().shape({
   name: yup
     .string()
     .trim()
     .required(t('required'))
-    .notOneOf(names, t('shouldBeUniq')),
+    .notOneOf(names, t('shouldBeUniq'))
+    .transform((value) => filter.clean(value)),
 });
 
 const Add = () => {
@@ -30,7 +35,8 @@ const Add = () => {
     validationSchema: channelNameValidation(channelsNames, t),
     onSubmit: async (values) => {
       try {
-        const response = await socketApi.newChannel({ name: values.name });
+        const preparedName = filter.clean(values.name.trim());
+        const response = await socketApi.newChannel({ name: preparedName });
         dispatch(setCurrentChannelId(response.data.id));
         dispatch(hideModal());
         toast.success(t('toast.channelCreate'));
@@ -60,7 +66,7 @@ const Add = () => {
               required
               ref={inputRef}
               onChange={formik.handleChange}
-              value={formik.values.name}
+              value={formik.errors.name ? filter.clean(formik.values.name) : formik.values.name}
               name="name"
               placeholder={t('channels.name')}
               id="name"

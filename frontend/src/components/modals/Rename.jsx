@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { Modal, Form, Button } from 'react-bootstrap';
 import * as yup from 'yup';
+import filter from 'leo-profanity';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { hideModal } from '../../store/modalsSlice.jsx';
@@ -24,13 +25,14 @@ const Rename = () => {
       .required(t('required'))
       .notOneOf(channelsNames, t('shouldBeUniq')),
   });
-
+  const ruProfanity = filter.getDictionary('ru');
+  filter.add(ruProfanity);
   const formik = useFormik({
     initialValues: { name: renamingChannel.name },
     validationSchema: channelNameSchema,
     onSubmit: async (values) => {
       try {
-        const preparedName = values.name.trim();
+        const preparedName = filter.clean(values.name.trim());
         formik.values.name = preparedName;
 
         await channelNameSchema.validate({ name: preparedName });
@@ -64,7 +66,7 @@ const Rename = () => {
               <Form.Control
                 ref={inputRef}
                 onChange={formik.handleChange}
-                value={formik.values.name}
+                value={formik.errors.name ? filter.clean(formik.values.name) : formik.values.name}
                 name="name"
                 id="name"
                 className="mb-2"
