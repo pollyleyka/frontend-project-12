@@ -46,11 +46,8 @@ const Rename = () => {
   });
 
   const inputRef = useRef();
-
   useEffect(() => {
-    setTimeout(() => {
-      inputRef.current.select();
-    }, 0);
+    inputRef.current.select();
   }, []);
 
   return (

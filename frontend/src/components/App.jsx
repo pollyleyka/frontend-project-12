@@ -21,20 +21,16 @@ import { addChannel, renameChannel, removeChannel } from '../store/channelsSlice
 import routes from '../routes.js';
 
 const AuthProvider = ({ children }) => {
-  const currentUser = JSON.parse(localStorage.getItem('user'));
-  const [user, setUser] = useState(currentUser || null);
+  const user = JSON.parse(localStorage.getItem('user'));
 
-  const [loggedIn, setLoggedIn] = useState(false);
-
+  const [loggedIn, setLoggedIn] = useState((user && user.token));
   const logIn = useCallback((userData) => {
+    console.log(userData);
     localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
     setLoggedIn(true);
   }, []);
-
   const logOut = useCallback(() => {
     localStorage.removeItem('user');
-    setUser(null);
     setLoggedIn(false);
   }, []);
 

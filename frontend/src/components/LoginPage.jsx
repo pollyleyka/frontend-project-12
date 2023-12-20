@@ -5,7 +5,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import schemas from '../schemas/index.js';
 import { useAuth } from '../hooks/index.jsx';
 import routes from '../routes.js';
@@ -17,6 +17,7 @@ const LoginPage = () => {
   const [, setAuthFailed] = useState(false);
   const inputRef = useRef();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     inputRef.current.focus();
@@ -42,9 +43,9 @@ const LoginPage = () => {
       setAuthFailed(false);
       try {
         const res = await axios.post(routes.loginPath(), value);
-        localStorage.setItem('user', res.data);
         auth.logIn(res.data);
-        navigate(routes.home);
+        const { from } = location.state || { from: { pathname: routes.home } };
+        navigate(from);
       } catch (err) {
         setSubmitting(false);
         if (err.isAxiosError && err.response.status === 401) {
@@ -72,14 +73,14 @@ const LoginPage = () => {
                   <img
                     src={imagePath}
                     className="img-fluid"
-                    alt="Войти"
+                    alt={t('loginPage.login')}
                   />
                 </div>
                 <Form
                   onSubmit={handleSubmit}
                   className="col-12 col-md-6 mt-3 mt-mb-0"
                 >
-                  <h1 className="text-center mb-4">{t('form.enter')}</h1>
+                  <h1 className="text-center mb-4">{t('loginPage.login')}</h1>
                   <Form.Floating className="mb-3">
                     <Form.Control
                       name="username"
@@ -98,14 +99,14 @@ const LoginPage = () => {
                         }
                     />
                     <Form.Label htmlFor="username">
-                      {t('form.loginPlaceholder')}
+                      {t('loginPage.password')}
                     </Form.Label>
                   </Form.Floating>
                   <Form.Floating className="mb-3">
                     <Form.Control
                       name="password"
                       autoComplete="current-password"
-                      placeholder={t('form.passwordPlaceholder')}
+                      placeholder={t('loginPage.password')}
                       type="password"
                       id="password"
                       value={values.password}
@@ -119,7 +120,7 @@ const LoginPage = () => {
                       required
                     />
                     <Form.Label htmlFor="password">
-                      {t('form.passwordPlaceholder')}
+                      {t('loginPage.password')}
                     </Form.Label>
                     <Form.Control.Feedback type="invalid">{t('validation.wrongData')}</Form.Control.Feedback>
                   </Form.Floating>
@@ -129,7 +130,7 @@ const LoginPage = () => {
                     disabled={isSubmitting}
                     variant="primary"
                   >
-                    {t('form.enter')}
+                    {t('loginPage.login')}
                   </Button>
                 </Form>
               </Row>
