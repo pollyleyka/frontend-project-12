@@ -8,6 +8,7 @@ import {
   Navigate,
   useLocation,
 } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import { io } from 'socket.io-client';
 import { useDispatch } from 'react-redux';
 import LoginPage from './LoginPage.jsx';
@@ -157,6 +158,18 @@ const App = () => {
               )}
             />
           </Routes>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </BrowserRouter>
       </AuthProvider>
     </SocketContext.Provider>

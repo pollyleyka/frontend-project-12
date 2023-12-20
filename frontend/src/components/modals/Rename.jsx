@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
 import { Modal, Form, Button } from 'react-bootstrap';
 import * as yup from 'yup';
+import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import { hideModal } from '../../store/modalsSlice.jsx';
 import { useSocket } from '../../hooks/index.jsx';
@@ -35,7 +36,7 @@ const Rename = () => {
         await channelNameSchema.validate({ name: preparedName });
         await socketApi.renameChan({ id: channelId, name: preparedName });
         dispatch(hideModal());
-        formik.resetForm({ values: { name: '' } });
+        toast.success(t('toast.channelRename'));
         formik.resetForm();
       } catch (error) {
         formik.setFieldError('name', error.message);

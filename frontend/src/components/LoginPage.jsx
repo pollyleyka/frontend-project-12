@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Row, Form, Button } from 'react-bootstrap';
 import React, { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -40,6 +41,11 @@ const LoginPage = () => {
         navigate(from);
       } catch (err) {
         formik.setSubmitting(false);
+        /* eslint-disable-next-line */
+        if (err.message === 'Network Error') {
+          toast.error(t('toast.connectionError'));
+          console.error('error', err);
+        }
         if (err.isAxiosError && err.response.status === 401) {
           setAuthFailed(true);
           inputRef.current.select();

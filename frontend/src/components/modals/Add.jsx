@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
+import { toast } from 'react-toastify';
 import { Modal, Form, Button } from 'react-bootstrap';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
@@ -32,6 +33,7 @@ const Add = () => {
         const response = await socketApi.newChannel({ name: values.name });
         dispatch(setCurrentChannelId(response.data.id));
         dispatch(hideModal());
+        toast.success(t('toast.channelCreate'));
         formik.resetForm();
       } catch (error) {
         console.error(error);
