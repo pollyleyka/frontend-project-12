@@ -22,7 +22,9 @@ const ChangedChannelButton = (name, id, currentChannelId, handleSetChannel, disp
         <span className="me-1">#</span>
         {name}
       </Button>
-      <Dropdown.Toggle split variant={id === currentChannelId ? 'secondary' : ''} id="react-aria5875383625-1" />
+      <Dropdown.Toggle split variant={id === currentChannelId ? 'secondary' : ''} id="react-aria5875383625-1">
+        <span className="visually-hidden">{t('channels.control')}</span>
+      </Dropdown.Toggle>
       <Dropdown.Menu>
         <Dropdown.Item
           onClick={() => { dispatch(showModal({ modalType: 'remove' })); dispatch(setChannelId({ id })); }}

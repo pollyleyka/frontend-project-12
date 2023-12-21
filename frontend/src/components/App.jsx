@@ -11,7 +11,6 @@ import { ToastContainer } from 'react-toastify';
 import { io } from 'socket.io-client';
 import { useDispatch } from 'react-redux';
 import AuthProvider from './AuthProvider.jsx';
-// import socketApi from './socketApi.jsx';
 import LoginPage from './LoginPage.jsx';
 import ErrorPage from './ErrorPage.jsx';
 import SignupPage from './SignupPage.jsx';
