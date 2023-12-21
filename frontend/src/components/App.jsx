@@ -57,24 +57,14 @@ const PrivateRoute = ({ children }) => {
     <Navigate to="/login" state={{ from: location }} />
   );
 };
-// const rollbarConfig = {
-//   accessToken: process.env.REACT_APP_ROLLBAR_TOKEN,
-//   payload: {
-//     environment: 'production',
-//   },
-//   captureUncaught: true,
-//   captureUnhandledRejections: true,
-// };
 const rollbarConfig = {
-  accessToken: '2df848ea23144a6c90be2806bfd0199a',
-  environment: 'testenv',
+  accessToken: process.env.REACT_APP_ROLLBAR_TOKEN,
+  payload: {
+    environment: 'production',
+  },
+  captureUncaught: true,
+  captureUnhandledRejections: true,
 };
-
-function TestError() {
-  const a = null;
-  return a.hello();
-}
-// console.log('token', process.env.REACT_APP_ROLLBAR_TOKEN);
 
 const App = () => {
   const socket = io();
@@ -178,7 +168,6 @@ const App = () => {
       <ErrorBoundary>
         <SocketContext.Provider value={socketApi}>
           <AuthProvider>
-            <TestError />
             <BrowserRouter>
               <Routes>
                 <Route path={routes.error} element={<ErrorPage />} />
