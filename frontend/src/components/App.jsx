@@ -1,6 +1,4 @@
-import React, {
-  useState, useCallback, useEffect, useMemo,
-} from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import {
   BrowserRouter,
   Routes,
@@ -12,11 +10,13 @@ import { Provider, ErrorBoundary } from '@rollbar/react';
 import { ToastContainer } from 'react-toastify';
 import { io } from 'socket.io-client';
 import { useDispatch } from 'react-redux';
+import AuthProvider from './AuthProvider.jsx';
+// import socketApi from './socketApi.jsx';
 import LoginPage from './LoginPage.jsx';
 import ErrorPage from './ErrorPage.jsx';
 import SignupPage from './SignupPage.jsx';
 import PrivatePage from './PrivatePage.jsx';
-import { AuthContext, SocketContext } from '../contexts/index.jsx';
+import { SocketContext } from '../contexts/index.jsx';
 import { useAuth } from '../hooks/index.jsx';
 import { addMessage } from '../store/messagesSlice.jsx';
 import {
@@ -25,27 +25,6 @@ import {
   removeChannel,
 } from '../store/channelsSlice.jsx';
 import routes from '../routes.js';
-
-const AuthProvider = ({ children }) => {
-  const user = JSON.parse(localStorage.getItem('user'));
-
-  const [loggedIn, setLoggedIn] = useState(user && user.token);
-  const logIn = useCallback((userData) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    setLoggedIn(true);
-  }, []);
-  const logOut = useCallback(() => {
-    localStorage.removeItem('user');
-    setLoggedIn(false);
-  }, []);
-
-  return (
-    /* eslint-disable-next-line */
-    <AuthContext.Provider value={{ user, loggedIn, logIn, logOut }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
 
 const PrivateRoute = ({ children }) => {
   const auth = useAuth();
@@ -178,7 +157,7 @@ const App = () => {
                     <PrivateRoute>
                       <PrivatePage />
                     </PrivateRoute>
-                    )}
+                  )}
                 />
               </Routes>
               <ToastContainer
