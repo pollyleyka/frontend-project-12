@@ -31,7 +31,6 @@ const AuthProvider = ({ children }) => {
 
   const [loggedIn, setLoggedIn] = useState(user && user.token);
   const logIn = useCallback((userData) => {
-    console.log(userData);
     localStorage.setItem('user', JSON.stringify(userData));
     setLoggedIn(true);
   }, []);
@@ -67,7 +66,7 @@ const rollbarConfig = {
 };
 
 const App = () => {
-  const socket = io();
+  const socket = io('/');
   const dispatch = useDispatch();
 
   useEffect(() => {
