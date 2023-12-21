@@ -8,6 +8,7 @@ import {
   Navigate,
   useLocation,
 } from 'react-router-dom';
+import { Provider, ErrorBoundary } from '@rollbar/react';
 import { ToastContainer } from 'react-toastify';
 import { io } from 'socket.io-client';
 import { useDispatch } from 'react-redux';
@@ -18,13 +19,17 @@ import PrivatePage from './PrivatePage.jsx';
 import { AuthContext, SocketContext } from '../contexts/index.jsx';
 import { useAuth } from '../hooks/index.jsx';
 import { addMessage } from '../store/messagesSlice.jsx';
-import { addChannel, renameChannel, removeChannel } from '../store/channelsSlice.jsx';
+import {
+  addChannel,
+  renameChannel,
+  removeChannel,
+} from '../store/channelsSlice.jsx';
 import routes from '../routes.js';
 
 const AuthProvider = ({ children }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
-  const [loggedIn, setLoggedIn] = useState((user && user.token));
+  const [loggedIn, setLoggedIn] = useState(user && user.token);
   const logIn = useCallback((userData) => {
     console.log(userData);
     localStorage.setItem('user', JSON.stringify(userData));
@@ -52,9 +57,27 @@ const PrivateRoute = ({ children }) => {
     <Navigate to="/login" state={{ from: location }} />
   );
 };
+// const rollbarConfig = {
+//   accessToken: process.env.REACT_APP_ROLLBAR_TOKEN,
+//   payload: {
+//     environment: 'production',
+//   },
+//   captureUncaught: true,
+//   captureUnhandledRejections: true,
+// };
+const rollbarConfig = {
+  accessToken: '2df848ea23144a6c90be2806bfd0199a',
+  environment: 'testenv',
+};
+
+function TestError() {
+  const a = null;
+  return a.hello();
+}
+// console.log('token', process.env.REACT_APP_ROLLBAR_TOKEN);
 
 const App = () => {
-  const socket = io('/');
+  const socket = io();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -116,63 +139,77 @@ const App = () => {
     [socket],
   );
 
-  const removeChan = useCallback((...args) => new Promise((resolve, reject) => {
-    socket.timeout(5000).emit('removeChannel', ...args, (err, response) => {
-      /* eslint-disable-next-line */
-      if (err) {
-        reject(err);
-      }
-      resolve(response);
-    });
-  }), [socket]);
-  const renameChan = useCallback((...args) => new Promise((resolve, reject) => {
-    socket.timeout(5000).emit('renameChannel', ...args, (err, response) => {
-      /* eslint-disable-next-line */
-      if (err) {
-        reject(err);
-      }
-      resolve(response);
-    });
-  }), [socket]);
+  const removeChan = useCallback(
+    (...args) => new Promise((resolve, reject) => {
+      socket.timeout(5000).emit('removeChannel', ...args, (err, response) => {
+        /* eslint-disable-next-line */
+        if (err) {
+          reject(err);
+        }
+        resolve(response);
+      });
+    }),
+    [socket],
+  );
+  const renameChan = useCallback(
+    (...args) => new Promise((resolve, reject) => {
+      socket.timeout(5000).emit('renameChannel', ...args, (err, response) => {
+        /* eslint-disable-next-line */
+        if (err) {
+          reject(err);
+        }
+        resolve(response);
+      });
+    }),
+    [socket],
+  );
 
   const socketApi = useMemo(
     () => ({
-      sendMessage, newChannel, removeChan, renameChan,
+      sendMessage,
+      newChannel,
+      removeChan,
+      renameChan,
     }),
     [sendMessage, newChannel, removeChan, renameChan],
   );
   return (
-    <SocketContext.Provider value={socketApi}>
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path={routes.error} element={<ErrorPage />} />
-            <Route path={routes.login} element={<LoginPage />} />
-            <Route path={routes.signup} element={<SignupPage />} />
-            <Route
-              path={routes.home}
-              element={(
-                <PrivateRoute>
-                  <PrivatePage />
-                </PrivateRoute>
-              )}
-            />
-          </Routes>
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
-        </BrowserRouter>
-      </AuthProvider>
-    </SocketContext.Provider>
+    <Provider config={rollbarConfig}>
+      <ErrorBoundary>
+        <SocketContext.Provider value={socketApi}>
+          <AuthProvider>
+            <TestError />
+            <BrowserRouter>
+              <Routes>
+                <Route path={routes.error} element={<ErrorPage />} />
+                <Route path={routes.login} element={<LoginPage />} />
+                <Route path={routes.signup} element={<SignupPage />} />
+                <Route
+                  path={routes.home}
+                  element={(
+                    <PrivateRoute>
+                      <PrivatePage />
+                    </PrivateRoute>
+                    )}
+                />
+              </Routes>
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
+            </BrowserRouter>
+          </AuthProvider>
+        </SocketContext.Provider>
+      </ErrorBoundary>
+    </Provider>
   );
 };
 
