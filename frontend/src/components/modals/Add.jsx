@@ -42,6 +42,7 @@ const Add = () => {
         toast.success(t('toast.channelCreate'));
         formik.resetForm();
       } catch (error) {
+        formik.setFieldError('name', error.message);
         console.error(error);
       }
     },
