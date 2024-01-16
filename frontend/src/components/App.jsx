@@ -44,7 +44,7 @@ const rollbarConfig = {
 };
 
 const App = () => {
-  const socket = io('/');
+  const socket = io();
   const dispatch = useDispatch();
 
   useEffect(() => {
