@@ -57,6 +57,7 @@ export default {
     cancel: 'Отменить',
     required: 'Обязательное поле',
     shouldBeUniq: 'Должно быть уникальным',
+    channelLength: 'От 3 до 20 символов',
 
   },
 

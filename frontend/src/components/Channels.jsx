@@ -1,7 +1,7 @@
 import {
   Col, Button, Dropdown, ButtonGroup,
 } from 'react-bootstrap';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { setCurrentChannelId } from '../store/channelsSlice.jsx';
@@ -48,6 +48,13 @@ const Channels = () => {
 
   const dispatch = useDispatch();
   const handleSetChannel = (id) => dispatch(setCurrentChannelId(id));
+
+  useEffect(() => {
+    setTimeout(() => {
+      activeChannel.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 0);
+  }, [channels]);
+
   return (
     <Col className="col-4 col-md-2 border-end px-0 bg-light flex-column h-100 d-flex">
       <div className="d-flex mt-1 justify-content-between mb-2 ps-4 pe-2 p-4">

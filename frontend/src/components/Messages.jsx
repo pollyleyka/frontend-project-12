@@ -7,6 +7,10 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useSocket } from '../hooks';
 
+const scrollToBottom = (element) => {
+  element.scrollTo(0, element.scrollHeight);
+};
+
 const Messages = () => {
   const socketApi = useSocket();
   const { t } = useTranslation();
@@ -22,6 +26,8 @@ const Messages = () => {
     .filter(({ channelId }) => channelId === currentChannelId);
 
   const messageBox = useRef(null);
+
+  useEffect(() => scrollToBottom(messageBox.current), [messagesOfCurrentChannel]);
 
   useEffect(() => {
     inputRef.current.focus();
@@ -48,6 +54,7 @@ const Messages = () => {
         });
         formik.resetForm();
       } catch (error) {
+        formik.setSubmitting(false);
         console.log(error);
       }
     },
@@ -68,7 +75,7 @@ const Messages = () => {
         <div
           id="messages-box"
           ref={messageBox}
-          className="chat-messages overflow-auto px-5 h-100"
+          className="chat-messages overflow-auto px-5 py-4 h-100"
         >
           {messagesOfCurrentChannel.map(({ message, id, user }) => (
             <div
@@ -89,6 +96,7 @@ const Messages = () => {
           <Form className="py-1 border rounded-2" noValidate onSubmit={formik.handleSubmit}>
             <Form.Group className="input-group has-validation">
               <Form.Control
+                disabled={formik.isSubmitted}
                 onChange={formik.handleChange}
                 value={formik.values.message}
                 className="border-0 p-0 ps-2"

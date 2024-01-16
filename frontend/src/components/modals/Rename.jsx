@@ -23,6 +23,8 @@ const Rename = () => {
   const channelNameSchema = yup.object().shape({
     name: yup.string().trim()
       .required(t('required'))
+      .min(3, t('channelLength'))
+      .max(20, t('channelLength'))
       .notOneOf(channelsNames, t('shouldBeUniq')),
   });
   const ruProfanity = filter.getDictionary('ru');
@@ -49,8 +51,11 @@ const Rename = () => {
   });
 
   const inputRef = useRef();
+
   useEffect(() => {
-    inputRef.current.select();
+    setTimeout(() => {
+      inputRef.current.select();
+    }, 0);
   }, []);
 
   return (
@@ -66,11 +71,16 @@ const Rename = () => {
               <Form.Control
                 ref={inputRef}
                 onChange={formik.handleChange}
-                value={formik.errors.name ? filter.clean(formik.values.name) : formik.values.name}
+                value={formik.values.name}
                 name="name"
+                type="text"
+                disabled={formik.isSubmitting}
                 id="name"
                 className="mb-2"
                 isInvalid={(formik.errors.name && formik.touched.name)}
+                autoFocus
+                autoComplete="off"
+                aria-selected
               />
               <Form.Control.Feedback type="invalid">{formik.errors.name}</Form.Control.Feedback>
               <Form.Label htmlFor="name" visuallyHidden>{t('channels.name')}</Form.Label>

@@ -1,3 +1,10 @@
+:root {
+  --user-message-background-color: #71d9df9c;
+  --user-message-border-color: #17636c;
+  --message-background-color: #c0f2f59c;
+  --message-border-color: #5c9ea5;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -10,4 +17,21 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+.user-message {
+  width: fit-content;
+  margin-left: auto;
+  max-width: 60%;
+  padding: 3px 8px;
+  background-color: var(--user-message-background-color);
+  border: 0.5px solid var(--user-message-border-color);
+  border-radius: 5px;
+}
+.message {
+  width: fit-content;
+  max-width: 60%;
+  padding: 3px 8px;
+  background-color: var(--message-background-color);
+  border: 0.5px solid var(--message-border-color);
+  border-radius: 5px;
 }
