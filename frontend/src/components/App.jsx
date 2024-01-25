@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   BrowserRouter,
   Routes,
@@ -46,6 +46,15 @@ const rollbarConfig = {
 const App = () => {
   const socket = io();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    socket.on('disconnect', () => {
+      localStorage.removeItem('user');
+    });
+    return () => {
+      socket.off('disconnect');
+    };
+  });
 
   useEffect(() => {
     socket.on('newChannel', (channel) => {
@@ -131,15 +140,13 @@ const App = () => {
     [socket],
   );
 
-  const socketApi = useMemo(
-    () => ({
-      sendMessage,
-      newChannel,
-      removeChan,
-      renameChan,
-    }),
-    [sendMessage, newChannel, removeChan, renameChan],
-  );
+  // eslint-disable-next-line react/jsx-no-constructed-context-values
+  const socketApi = {
+    sendMessage,
+    newChannel,
+    removeChan,
+    renameChan,
+  };
   return (
     <Provider config={rollbarConfig}>
       <ErrorBoundary>

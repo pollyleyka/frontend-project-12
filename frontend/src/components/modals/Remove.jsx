@@ -4,7 +4,6 @@ import { Modal, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { hideModal } from '../../store/modalsSlice.jsx';
-import { setCurrentChannelId } from '../../store/channelsSlice.jsx';
 import { useSocket } from '../../hooks/index.jsx';
 
 const Remove = () => {
@@ -14,7 +13,6 @@ const Remove = () => {
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const { channelId } = useSelector((state) => state.modals);
-  const { currentChannelId } = useSelector((state) => state.channels);
 
   const generateOnSubmit = async () => {
     try {
@@ -22,9 +20,6 @@ const Remove = () => {
       await socketApi.removeChan({ id: channelId });
       dispatch(hideModal());
       /* eslint-disable-next-line */
-      if (currentChannelId === channelId) {
-        dispatch(setCurrentChannelId(1));
-      }
       toast.success(t('toast.channelDelete'));
     } catch (error) {
       console.error(error);
